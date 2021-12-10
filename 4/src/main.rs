@@ -12,6 +12,7 @@ fn main() {
 
     let bingo_numbers : Vec<u32> = tmp.clone().iter().map(|x| x.trim().parse().expect("panik")).collect();
     let mut boards : Vec<Array2D<(u32, bool)>> = Vec::new();
+    let mut winner_boards : Vec<(usize, u32)> = Vec::new();
     
     let mut i = 1;
     let mut row_iter = 0;
@@ -47,14 +48,28 @@ fn main() {
                 boards[index][position].1 = true;
                 let win = check_win(boards[index].clone(), position);
                 if win {
-                    println!("BOARD {} WON!", index + 1);
                     let score = calc_board_score(boards[index].clone(), number);
-                    println!("SCORE = {}", score);
-                    break 'main;
+                    if check_unique_winner(winner_boards.clone(), (index+1, score)) {
+                        winner_boards.push((index+1, score));
+                        println!("BOARD {} WON!", index + 1);
+                        println!("SCORE = {}", score);
+                    }
                 }
             }
         }
     }
+
+    println!("LAST BOARD WON WITH SCORE {}", winner_boards[winner_boards.len()-1].1);
+}
+
+fn check_unique_winner(winners: Vec<(usize, u32)>, entry: (usize, u32)) -> bool {
+    for winner in winners {
+        if winner.0 == entry.0 {
+            return false;
+        }
+    }
+
+    true
 }
 
 // not needed anymore but left as POC
