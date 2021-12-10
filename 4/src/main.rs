@@ -38,7 +38,7 @@ fn main() {
         i += 1;
     }
 
-    'main: for number in bingo_numbers {
+    for number in bingo_numbers {
         println!("drawing... {}", number);
         for index in 0..boards.len() {
             let found = find_in_array2d(boards[index].clone(), number);
