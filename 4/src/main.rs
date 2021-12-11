@@ -4,15 +4,16 @@ use array2d::Array2D;
 const BOARDSIZE : usize = 5;
 
 fn main() {
-    solve_part1();
-    solve_part2();
-}
-
-fn solve_part1() {
     let file_contents = fs::read_to_string("input.txt")
         .expect("Something went wrong");
 
     let lines : Vec<&str> = file_contents.lines().collect();
+
+    solve_part1(lines.clone());
+    solve_part2(lines.clone());
+}
+
+fn solve_part1(lines : Vec<&str>) {
     let mut tmp : Vec<&str> = lines[0].split(',').collect();
 
     let bingo_numbers : Vec<u32> = tmp.clone().iter().map(|x| x.trim().parse().expect("panik")).collect();
@@ -60,11 +61,7 @@ fn solve_part1() {
     }
 }
 
-fn solve_part2() {
-    let file_contents = fs::read_to_string("input.txt")
-        .expect("Something went wrong");
-
-    let lines : Vec<&str> = file_contents.lines().collect();
+fn solve_part2(lines : Vec<&str>) {
     let mut tmp : Vec<&str> = lines[0].split(',').collect();
 
     let bingo_numbers : Vec<u32> = tmp.clone().iter().map(|x| x.trim().parse().expect("panik")).collect();

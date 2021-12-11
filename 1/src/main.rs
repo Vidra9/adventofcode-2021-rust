@@ -3,17 +3,17 @@ use std::fs;
 const UNDEFINED_NUMBER: i32 = -1;
 
 fn main() {
-    solve_part1();
-    solve_part2();
-}
-
-fn solve_part1() {
-    let mut result = 0;
-
     let file_contents = fs::read_to_string("input.txt")
         .expect("Something went wrong");
 
-    let lines = file_contents.lines();
+    let lines : Vec<&str> = file_contents.lines().collect();
+
+    solve_part1(lines.clone());
+    solve_part2(lines.clone());
+}
+
+fn solve_part1(lines : Vec<&str>) {
+    let mut result = 0;
     let mut previous : i32 = -1;
 
     for next_line in lines {
@@ -30,13 +30,10 @@ fn solve_part1() {
     println!("part 1: {}", result);
 }
 
-fn solve_part2() {
+fn solve_part2(lines : Vec<&str>) {
     let mut result = 0;
 
-    let file_contents = fs::read_to_string("input.txt")
-        .expect("Something went wrong");
-
-    let list : Vec<i32> = file_contents.lines().map(|x| x.trim().parse().expect("panik")).collect();
+    let list : Vec<i32> = lines.iter().map(|x| x.trim().parse().expect("panik")).collect();
     let mut previous : i32 = -1;
 
     let mut i = 0;

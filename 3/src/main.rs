@@ -1,15 +1,16 @@
 use std::fs;
 
 fn main() {
-    solve_part1();
-    solve_part2();
-}
-
-fn solve_part1() {
     let file_contents = fs::read_to_string("input.txt")
         .expect("Something went wrong");
 
     let lines : Vec<&str> = file_contents.lines().collect();
+    
+    solve_part1(lines.clone());
+    solve_part2(lines.clone());
+}
+
+fn solve_part1(lines : Vec<&str>) {
     let lines_len = lines.len() as u32;
     let mut counter_vector : Vec<u32> = Vec::new();
     init_vector_with_num(&mut counter_vector, 0, lines[0].chars().count() as u32);
@@ -41,12 +42,7 @@ fn solve_part1() {
     println!("part 1 : {}", gamma * epsilon);
 }
 
-fn solve_part2() {
-    let file_contents = fs::read_to_string("input.txt")
-        .expect("Something went wrong");
-
-    let lines : Vec<&str> = file_contents.lines().collect();
-
+fn solve_part2(lines : Vec<&str>) {
     let mut generator_vec : Vec<&str> = lines;
     let mut scrubber_vec : Vec<&str> = generator_vec.clone();
 
