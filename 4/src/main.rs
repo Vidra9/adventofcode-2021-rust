@@ -4,6 +4,11 @@ use array2d::Array2D;
 const BOARDSIZE : usize = 5;
 
 fn main() {
+    solve_part1();
+    solve_part2();
+}
+
+fn solve_part1() {
     let file_contents = fs::read_to_string("input.txt")
         .expect("Something went wrong");
 
@@ -12,7 +17,6 @@ fn main() {
 
     let bingo_numbers : Vec<u32> = tmp.clone().iter().map(|x| x.trim().parse().expect("panik")).collect();
     let mut boards : Vec<Array2D<(u32, bool)>> = Vec::new();
-    let mut winner_boards : Vec<(usize, u32)> = Vec::new();
     
     let mut i = 1;
     let mut row_iter = 0;
@@ -38,8 +42,60 @@ fn main() {
         i += 1;
     }
 
+    'main: for number in bingo_numbers {
+        for index in 0..boards.len() {
+            let found = find_in_array2d(boards[index].clone(), number);
+            
+            if found.is_some() {
+                let position = found.unwrap();
+                boards[index][position].1 = true;
+                let win = check_win(boards[index].clone(), position);
+                if win {
+                    let score = calc_board_score(boards[index].clone(), number);
+                    println!("part 1: {}", score);
+                    break 'main;
+                }
+            }
+        }
+    }
+}
+
+fn solve_part2() {
+    let file_contents = fs::read_to_string("input.txt")
+        .expect("Something went wrong");
+
+    let lines : Vec<&str> = file_contents.lines().collect();
+    let mut tmp : Vec<&str> = lines[0].split(',').collect();
+
+    let bingo_numbers : Vec<u32> = tmp.clone().iter().map(|x| x.trim().parse().expect("panik")).collect();
+    let mut boards : Vec<Array2D<(u32, bool)>> = Vec::new();
+    let mut winner_boards : Vec<(usize, u32)> = Vec::new();
+
+    let mut i = 1;
+    let mut row_iter = 0;
+    let mut new_board = Array2D::filled_with((0, false), BOARDSIZE, BOARDSIZE);
+
+    // populate boards vector from input
+    while i < lines.len() {
+        // make new arr2d
+        if lines[i].chars().count() == 0 {
+            row_iter = 0;
+        }
+        else {
+            tmp = lines[i].split_whitespace().collect();
+            let row : Vec<u32> = tmp.clone().iter().map(|x| x.trim().parse().expect("panik")).collect();
+            for index in 0..row.len() {
+                new_board[(row_iter as usize, index as usize)] = (row[index], false);
+            }
+            if row_iter == BOARDSIZE - 1 {
+                boards.push(new_board.clone());
+            }
+            row_iter += 1;
+        }
+        i += 1;
+    }
+
     for number in bingo_numbers {
-        println!("drawing... {}", number);
         for index in 0..boards.len() {
             let found = find_in_array2d(boards[index].clone(), number);
             
@@ -51,15 +107,13 @@ fn main() {
                     let score = calc_board_score(boards[index].clone(), number);
                     if check_unique_winner(winner_boards.clone(), (index+1, score)) {
                         winner_boards.push((index+1, score));
-                        println!("BOARD {} WON!", index + 1);
-                        println!("SCORE = {}", score);
                     }
                 }
             }
         }
     }
 
-    println!("LAST BOARD WON WITH SCORE {}", winner_boards[winner_boards.len()-1].1);
+    println!("part 2: {}", winner_boards[winner_boards.len()-1].1);
 }
 
 fn check_unique_winner(winners: Vec<(usize, u32)>, entry: (usize, u32)) -> bool {
