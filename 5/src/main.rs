@@ -1,4 +1,5 @@
 use std::fs;
+use std::collections::HashMap;
 
 fn main() {
     let file_contents = fs::read_to_string("input.txt")
@@ -11,7 +12,7 @@ fn main() {
 }
 
 fn solve_part1(lines : Vec<&str>) {
-    let mut occupied : Vec<(u32, u32, u32)> = Vec::new();
+    let mut hash : HashMap<(u32, u32), u32> = HashMap::new();
 
     let mut line_num = 0;
     for line in lines {
@@ -42,36 +43,18 @@ fn solve_part1(lines : Vec<&str>) {
 
         for i in loop_range.0..=loop_range.1 {
             let pos = if coord == 0 {(start_position.0, i)} else {(i, start_position.1)};
-            let index = find(occupied.clone(), pos);
-            if index.is_some() {
-                occupied[index.unwrap()].2 += 1;
-                // print!("inc ({},{},{}) ", occupied[index.unwrap()].0, occupied[index.unwrap()].1, occupied[index.unwrap()].2);
-            }
-            else {
-                occupied.push((pos.0, pos.1, 1));
-                // print!("push ({},{}) ", pos.0, pos.1);
-            }
+            *hash.entry(pos).or_insert(0) += 1;
         }
-        // print!("\n");
     }
     
     let mut result = 0;
-    for bruh in occupied {
-        if bruh.2 > 1 {
+    for bruh in hash {
+        if bruh.1 > 1 {
             result += 1;
         }
     }
 
     println!("part 1: {}", result);
-}
-
-fn find(vec : Vec<(u32, u32, u32)>, pos_to_find : (u32, u32)) -> Option<usize> {
-    for index in 0..vec.len() {
-        if vec[index].0 == pos_to_find.0 && vec[index].1 == pos_to_find.1 {
-            return Some(index)
-        }
-    }
-    None
 }
 
 fn solve_part2(lines : Vec<&str>) {
