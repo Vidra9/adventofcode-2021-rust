@@ -3,3 +3,5 @@ A small repository of solutions to [Advent of code 2021](https://adventofcode.co
 
 
 small rust AOC repo
+
+another shit
